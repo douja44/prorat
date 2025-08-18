@@ -2574,4 +2574,40 @@ section,
   border-color: #0C5FCD;
 }
 
+/* ===========================
+   Erreurs formulaires & flash
+   =========================== */
 
+/* Messages d'erreur générés par Symfony (form_errors) */
+ul.form-errors,
+ul.form-errors li,
+.form-error-message,
+.help-block,
+.error,
+.error-text,
+.text-danger,
+.invalid-feedback {
+  color: #dc3545 !important; /* Rouge (Bootstrap) */
+  display: block;            /* Toujours visibles */
+}
+
+/* Champs invalides (Bootstrap/Symfony) */
+.form-control.is-invalid,
+.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: none !important;
+}
+
+/* Messages flash d'erreur */
+.alert-danger {
+  color: #842029 !important;
+  background-color: #f8d7da !important;
+  border-color: #f5c2c7 !important;
+}
+
+/* Optionnel : rendre les petits textes d’aide d’erreur bien visibles */
+.small.text-danger,
+span.text-danger,
+div.text-danger {
+  color: #dc3545 !important;
+}

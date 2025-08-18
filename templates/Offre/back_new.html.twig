@@ -69,30 +69,64 @@
                         <div class="alert alert-danger">{{ message }}</div>
                     {% endfor %}
 
-                    {{ form_start(form) }}
+                    {# novalidate pour laisser Symfony gérer les messages #}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
                     <div class="mb-5">
                         {{ form_label(form.titre) }}
-                        {{ form_widget(form.titre, {'attr': {'class': 'form-control input-long'}}) }}
-                        {{ form_errors(form.titre) }}
+                        {{ form_widget(form.titre, {
+                            attr: {
+                                class: 'form-control input-long' ~ (form_errors(form.titre) ? ' is-invalid' : '')
+                            }
+                        }) }}
+                        {% if form_errors(form.titre) %}
+                            <div class="invalid-feedback d-block">
+                                {{ form_errors(form.titre) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-5">
                         {{ form_label(form.description) }}
-                        {{ form_widget(form.description, {'attr': {'class': 'form-control input-long', 'style': 'height: 120px;'}}) }}
-                        {{ form_errors(form.description) }}
+                        {{ form_widget(form.description, {
+                            attr: {
+                                class: 'form-control input-long' ~ (form_errors(form.description) ? ' is-invalid' : ''),
+                                style: 'height: 120px;'
+                            }
+                        }) }}
+                        {% if form_errors(form.description) %}
+                            <div class="invalid-feedback d-block">
+                                {{ form_errors(form.description) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-5">
                         {{ form_label(form.dateDebut) }}
-                        {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control input-long'}}) }}
-                        {{ form_errors(form.dateDebut) }}
+                        {{ form_widget(form.dateDebut, {
+                            attr: {
+                                class: 'form-control input-long' ~ (form_errors(form.dateDebut) ? ' is-invalid' : '')
+                            }
+                        }) }}
+                        {% if form_errors(form.dateDebut) %}
+                            <div class="invalid-feedback d-block">
+                                {{ form_errors(form.dateDebut) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-5">
                         {{ form_label(form.tauxReduction) }}
-                        {{ form_widget(form.tauxReduction, {'attr': {'class': 'form-control input-long'}}) }}
-                        {{ form_errors(form.tauxReduction) }}
+                        {{ form_widget(form.tauxReduction, {
+                            attr: {
+                                class: 'form-control input-long' ~ (form_errors(form.tauxReduction) ? ' is-invalid' : '')
+                            }
+                        }) }}
+                        {% if form_errors(form.tauxReduction) %}
+                            <div class="invalid-feedback d-block">
+                                {{ form_errors(form.tauxReduction) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="text-center mt-5">
@@ -133,6 +167,37 @@
     padding: 10px;
     font-size: 16px;
 }
+
+/* ==== Erreurs en rouge (sans Bootstrap) ==== */
+.is-invalid {
+    border-color: #dc3545 !important;
+    outline: none;
+}
+.invalid-feedback {            /* conteneur des erreurs */
+    color: #dc3545 !important; /* texte rouge */
+    font-weight: 600;
+    margin-top: .35rem;
+    font-size: .95rem;
+}
+.invalid-feedback ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+.invalid-feedback li {
+    color: #dc3545 !important;
+}
+
+/* fallback si Symfony rend un <ul> directement après l'input */
+.form-control + ul,
+.form-control + ul li {
+    color: #dc3545 !important;
+    list-style: none;
+    margin-top: .35rem;
+    padding-left: 0;
+}
+
+/* Boutons */
 .custom-submit-btn {
     background-color: #0056ff;
     border: none;
