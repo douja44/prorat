@@ -1,0 +1,99 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Modifier Organisateur{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <div class="card shadow-lg p-4" style="max-width: 1200px; margin: auto; border-radius: 10px; padding: 10px;">
+    <h2 class="text-center fw-bold" style="color: #6188ae;">Modifier Organisateur</h2>
+    <p class="text-center text-muted">Modifiez vos informations pour organiser des événements exceptionnels !</p>
+
+    {{ form_start(form, {'attr': {'class': 'organizer-form', 'novalidate': 'novalidate'}}) }}
+
+    <div class="row mt-4">
+        <!-- Left Section -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Informations Personnelles</h4>
+            <div class="form-group mb-3">
+                <label for="nom">Nom</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user icon"></i>
+                    {{ form_widget(form.user.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="prenom">Prénom</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user icon" style="color:#6188ae;"></i>
+                    {{ form_widget(form.user.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope icon"></i>
+                    {{ form_widget(form.user.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+                </div>
+            </div>
+
+            <!-- Email Professionnel Moved Here -->
+            <div class="form-group mb-3">
+                <label for="workEmail">Email Professionnel</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope icon"></i>
+                    {{ form_widget(form.workEmail, {'attr': {'class': 'form-control', 'placeholder': 'Email Professionnel'}}) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Informations Complémentaires</h4>
+            <div class="form-group mb-3">
+                <label for="date_naiss">Date de naissance</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-calendar-alt icon"></i>
+                    {{ form_widget(form.user.date_naiss, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="adresse">Adresse</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-map-marker-alt icon"></i>
+                    {{ form_widget(form.user.adresse, {'attr': {'class': 'form-control', 'placeholder': 'Adresse'}}) }}
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="telephone">Téléphone</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone icon"></i>
+                    {{ form_widget(form.user.telephone, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
+                </div>
+            </div>
+              
+
+            <div class="form-group mb-3">
+                <label for="workField">Domaine de travail</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-briefcase icon"></i>
+                    {{ form_widget(form.workField, {'attr': {'class': 'form-control', 'placeholder': 'Domaine de travail'}}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-group mt-3">
+      <button type="submit" class="btn w-100 py-2" style="background-color: #6188ae; border-color: #6188ae; color: white;">
+        <i class="fas fa-save"></i> Enregistrer
+      </button>
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+</div>
+{% endblock %}

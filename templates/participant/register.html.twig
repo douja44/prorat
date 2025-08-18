@@ -1,0 +1,138 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Inscription Participant{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <div class="card shadow-lg p-4" style="max-width: 1200px; margin: auto; border-radius: 10px;padding: 10px;">
+    <h2 class="text-center fw-bold" style="color: #6188ae;">Inscription Participant</h2>
+    <p class="text-center text-muted">Inscrivez-vous pour participer à nos événements exclusifs !</p>
+ 
+
+    {{ form_start(registrationForm, {'attr': {'class': 'participant-form', 'novalidate': 'novalidate'}}) }}
+
+    <div class="row mt-4">
+        <!-- Left Section -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Informations Personnelles</h4>
+            <div class="form-group mb-3">
+                <label for="nom">Nom</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user icon"></i>
+                    {{ form_widget(registrationForm.user.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                </div>
+                {% if not registrationForm.user.nom.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.nom) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="prenom">Prénom</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user icon" style="color:#6188ae;"></i>
+                    {{ form_widget(registrationForm.user.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
+                </div>
+                {% if not registrationForm.user.prenom.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.prenom) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope icon"></i>
+                    {{ form_widget(registrationForm.user.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+                </div>
+                 {% if not registrationForm.user.email.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.email) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="mot_de_passe">Mot de passe</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock icon"></i>
+                    {{ form_widget(registrationForm.user.mot_de_passe, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                </div>
+                 {% if not registrationForm.user.mot_de_passe.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.mot_de_passe) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Informations Professionnelles</h4>
+            <div class="form-group mb-3">
+                <label for="nombreParticipations">Nombre de participations</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-users icon"></i>
+                    {{ form_widget(registrationForm.nombreParticipations, {'attr': {'class': 'form-control', 'placeholder': 'Nombre de participations'}}) }}
+                </div>
+                {% if not registrationForm.nombreParticipations.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.nombreParticipations) }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Moving the new fields to the right -->
+            <h4 class="mb-3">Informations de Contact</h4>
+            <div class="form-group mb-3">
+                <label for="date_naiss">Date de naissance</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-calendar-alt icon"></i>
+                    {{ form_widget(registrationForm.user.date_naiss, {'attr': {'class': 'form-control', 'placeholder': 'Date de naissance'}}) }}
+                </div>
+                {% if not registrationForm.user.date_naiss.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.date_naiss) }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="adresse">Adresse</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-home icon"></i>
+                    {{ form_widget(registrationForm.user.adresse, {'attr': {'class': 'form-control', 'placeholder': 'Adresse'}}) }}
+                </div>
+                {% if not registrationForm.user.adresse.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.adresse) }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="telephone">Téléphone</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone icon"></i>
+                    {{ form_widget(registrationForm.user.telephone, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
+                </div>
+                {% if not registrationForm.user.telephone.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.telephone) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn w-100 py-2" style="background-color: #6188ae; border-color: #6188ae; color: white;">
+        <i class="fas fa-user-plus"></i> S'inscrire
+    </button>
+
+    {{ form_end(registrationForm) }}
+  </div>
+</div>
+{% endblock %}

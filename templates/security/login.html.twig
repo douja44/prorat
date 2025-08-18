@@ -1,0 +1,95 @@
+{% extends 'baseLogin.html.twig' %}
+
+{% block title %}Connexion & Inscription{% endblock %}
+
+{% block body %}
+<div class="container">
+    <input type="checkbox" id="flip">
+    <div class="cover">
+        <div class="front">
+            <img src="{{ asset('assets/img/logo.jpg') }}" alt="Evencia Logo">
+            <div class="text">
+                <span class="text-1">Transformez chaque moment <br> en un souvenir inoubliable</span>
+                <span class="text-2">Avec Evencia, chaque événement est unique</span>
+            </div>
+        </div>
+        <div class="back">
+            <img class="backImg" src="{{ asset('assets/img/logo.jpg') }}" alt="Evencia Logo">
+            <div class="text">
+                <span class="text-1">Des kilomètres de voyage <br> commencent par un pas</span>
+                <span class="text-2">Commençons ensemble</span>
+            </div>
+        </div>
+    </div>
+    <div class="forms">
+        <div class="form-content">
+            <!-- Login Form -->
+            <div class="login-form">
+                <div class="title">Connexion</div>
+                <form method="post">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    <div class="input-boxes">
+                        <div class="input-box">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" name="email" value="{{ last_username }}" placeholder="Entrez votre email" required autofocus>
+                        </div>
+                        <div class="input-box">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" placeholder="Entrez votre mot de passe" required>
+                        </div>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        <div class="text"><a href="#">Mot de passe oublié ?</a></div>
+                        <div class="button input-box">
+                            <input type="submit" value="Se connecter">
+                        </div>
+                        <div class="text sign-up-text">Pas encore de compte ? <label for="flip">Inscrivez-vous maintenant</label></div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Registration Form -->
+            <div class="signup-form">
+                <div class="title">Inscription</div>
+                <form action="#">
+                    <div class="input-boxes">
+                        <!-- Role Selection -->
+                        <div class="roles">
+                            <label class="role-title">Choisissez votre rôle :</label>
+                            <div class="role-options-wrapper">
+                                <div class="role-row">
+                                    <a href="{{ path('app_participant_register') }}" class="role-card-link">
+                                        <div class="role-card">
+                                            <img src="{{ asset('assets/img/image2.png') }}" alt="Participant">
+                                            <span>Participant</span>
+                                        </div>
+                                    </a>
+
+                                    <a href="{{ path('app_organisateur_register') }}" class="role-card-link">
+                                        <div class="role-card">
+                                            <img src="{{ asset('assets/img/image2.png') }}" alt="Organisateur">
+                                            <span>Organisateur</span>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <div class="role-row">
+                                    <a href="{{ path('app_partenaire_register') }}" class="role-card-link">
+                                        <div class="role-card">
+                                            <img src="{{ asset('assets/img/image2.png') }}" alt="Partenaire">
+                                            <span>Partenaire</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text sign-up-text">Vous avez déjà un compte ? <label for="flip">Connectez-vous maintenant</label></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

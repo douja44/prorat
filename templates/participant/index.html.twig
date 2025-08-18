@@ -1,0 +1,51 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Liste des participants{% endblock %}
+
+{% block body %}
+    {% if participants is not empty %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Nombre de participations</th>
+                    <th>Date d'inscription</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for participant in participants %}
+                <tr>
+                    <td>{{ participant.idparticipant }}</td>
+                    <td>{{ participant.user.nom }}</td>
+                    <td>{{ participant.user.prenom }}</td>
+                    <td>{{ participant.user.email }}</td>
+                    <td>{{ participant.nombreParticipations }}</td>
+                    <td>{{ participant.user.dateinscription ? participant.user.dateinscription|date('Y-m-d') : '' }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <form action="{{ path('app_participant_show', {'id_participant': participant.idparticipant}) }}" method="get" style="display:inline;">
+                                <button type="submit" class="btn btn-info">Show</button>
+                            </form>
+                            <form action="{{ path('app_participant_edit', {'id_participant': participant.idparticipant}) }}" method="get" style="display:inline;">
+                                <button type="submit" class="btn btn-warning">Edit</button>
+                            </form>
+                            <form action="{{ path('app_participant_delete', {'id_participant': participant.idparticipant}) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this participant?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ participant.idparticipant) }}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucun participant trouvé.</p>
+    {% endif %}
+
+    <a href="{{ path('app_participant_register') }}" class="create-button">Créer un nouveau participant</a>
+{% endblock %}

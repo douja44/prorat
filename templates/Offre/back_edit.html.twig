@@ -1,0 +1,170 @@
+<!DOCTYPE html> 
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un Offre</title>
+    <link rel="icon" href="{{ asset('assets/img/logo.jpg') }}">
+    
+    <!-- CSS -->
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/style1.css') }}" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Poppins&family=Raleway&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+
+    <!-- Navbar -->
+    <nav id="content">
+        <i class='bx bx-menu toggle-sidebar'></i>
+
+        <form method="get" action="{{ path('app_user_index') }}" style="width: 100%; max-width: 400px;">
+            <div class="form-group" style="display: flex; position: relative; width: 100%;">
+                <input type="text" name="search" placeholder="Rechercher..." style="width: 100%; padding-right: 40px;">
+                <button type="submit" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none;">
+                    <i class='bx bx-search icon'></i>
+                </button>
+            </div>
+        </form>
+
+        <a href="#" class="nav-link"><i class='bx bxs-bell icon'></i><span class="badge">5</span></a>
+        <a href="#" class="nav-link"><i class='bx bxs-message-square-dots icon'></i><span class="badge">8</span></a>
+
+        <div class="profile">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9" alt="profile">
+            <ul class="profile-link">
+                <li><a href="#"><i class='bx bxs-user-circle icon'></i>Profile</a></li>
+                <li><a href="#"><i class='bx bxs-cog'></i>Settings</a></li>
+                <li><a href="#"><i class='bx bxs-log-out-circle'></i>Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside>
+        <section id="sidebar">
+            <a href="#" class="brand"><i class='bx bxs-smile icon'></i> AdminEvencia</a>
+            <ul class="side-menu">
+                <li><a href="#" class="active"><i class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+                <li class="divider" data-text="main">Main</li>
+                <li><a href="{{ path('app_user_index') }}"><i class="fas fa-users"></i> All Users</a></li>
+                <li><a href="{{ path('app_organisateur_index') }}?role=organisateur"><i class="fas fa-user-tie"></i> Organisateurs</a></li>
+                <li><a href="{{ path('app_participant_index') }}?role=participant"><i class="fas fa-users"></i> Participants</a></li>
+                <li><a href="{{ path('app_partenaire_index') }}?role=partenaire"><i class="fas fa-handshake"></i> Partenaires</a></li>
+            </ul>
+        </section>
+    </aside>
+
+    <!-- Main Content -->
+    <main>
+        <section id="content">
+            <div class="container mt-5 d-flex justify-content-center">
+                <div class="card p-5 shadow form-container">
+                    <h1 class="text-center mb-4">Modifier un Offre</h1>
+
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endfor %}
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% endfor %}
+
+                    {{ form_start(form) }}
+
+                    <div class="mb-5">
+                        {{ form_label(form.titre) }}
+                        {{ form_widget(form.titre, {'attr': {'class': 'form-control input-long'}}) }}
+                        {{ form_errors(form.titre) }}
+                    </div>
+
+                    <div class="mb-5">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control input-long', 'style': 'height: 120px;'}}) }}
+                        {{ form_errors(form.description) }}
+                    </div>
+
+                    <div class="mb-5">
+                        {{ form_label(form.dateDebut) }}
+                        {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control input-long'}}) }}
+                        {{ form_errors(form.dateDebut) }}
+                    </div>
+
+                    <div class="mb-5">
+                        {{ form_label(form.tauxReduction) }}
+                        {{ form_widget(form.tauxReduction, {'attr': {'class': 'form-control input-long'}}) }}
+                        {{ form_errors(form.tauxReduction) }}
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg custom-submit-btn">Modifier le Offre</button>
+                    </div>
+
+                    {{ form_end(form) }}
+
+                </div> <!-- Fermeture carte blanche -->
+            </div> <!-- Fermeture container formulaire -->
+
+            <!-- Bouton Retour Liste Offres -->
+            <div class="text-center mt-5">
+                <a href="{{ path('offre_front_back_index') }}" class="btn btn-info custom-list-btn">
+                    <i class="fas fa-list"></i> Liste des Offres
+                </a>
+            </div>
+
+        </section>
+    </main>
+
+</div>
+
+<!-- Styles internes -->
+<style>
+.form-container {
+    width: 90%;
+    max-width: 1000px;
+    background: #fff;
+    padding: 60px;
+    border-radius: 12px;
+    margin: 0 auto;
+    min-height: 800px;
+}
+.input-long {
+    width: 100%;
+    height: 50px;
+    padding: 10px;
+    font-size: 16px;
+}
+.custom-submit-btn {
+    background-color: #0056ff;
+    border: none;
+    height: 55px;
+    width: 23cm;
+    font-size: 24px !important;
+    transition: all 0.3s ease;
+}
+.custom-submit-btn:hover {
+    background-color: #3366ff;
+    transform: scale(1.02);
+}
+.custom-list-btn {
+    width: 250px;
+    height: 50px;
+    font-size: 18px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+}
+.custom-list-btn:hover {
+    background-color: #138496;
+}
+</style>
+
+<!-- Script JS -->
+<script src="{{ asset('assets/js/script.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Liste des Partenaires{% endblock %}
+
+{% block body %}
+    {% if partenaires is not empty %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Domaine de travail</th>
+                    <th>Site Web</th>
+                    <th>Nombre de contacts</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for partenaire in partenaires %}
+                <tr>
+                    <td>{{ partenaire.idpartenaire }}</td>
+                    <td>{{ partenaire.user.nom }}</td>
+                    <td>{{ partenaire.user.prenom }}</td>
+                    <td>{{ partenaire.user.email }}</td>
+                    <td>{{ partenaire.type_service }}</td>
+                    <td>{{ partenaire.site_web }}</td>
+                    <td>{{ partenaire.nbre_contacts }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <form action="{{ path('app_partenaire_show', {'id_partenaire': partenaire.idpartenaire}) }}" method="get" style="display:inline;">
+                                <button type="submit" class="btn btn-info">Show</button>
+                            </form>
+                            <form action="{{ path('app_partenaire_edit', {'id_partenaire': partenaire.idpartenaire}) }}" method="get" style="display:inline;">
+                                <button type="submit" class="btn btn-warning">Edit</button>
+                            </form>
+                            <form action="{{ path('app_partenaire_delete', {'id_partenaire': partenaire.idpartenaire}) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this partner?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ partenaire.idpartenaire) }}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucun partenaire trouvé.</p>
+    {% endif %}
+
+    <a href="{{ path('app_partenaire_register') }}" class="create-button">Créer un nouveau partenaire</a>
+{% endblock %}

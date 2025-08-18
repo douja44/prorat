@@ -1,0 +1,49 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Liste des Organisateurs{% endblock %}
+
+{% block body %}
+  {% if organisateurs is not empty %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Email</th>
+          <th>Domaine</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for organisateur in organisateurs %}
+          <tr>
+            <td>{{ organisateur.idorganisateur }}</td>
+            <td>{{ organisateur.user.nom }}</td>
+            <td>{{ organisateur.user.prenom }}</td>
+            <td>{{ organisateur.user.email }}</td>
+            <td>{{ organisateur.workField }}</td>
+            <td>
+              <div class="action-buttons">
+                <form action="{{ path('app_organisateur_show', {'id_organisateur': organisateur.idorganisateur}) }}" method="get" style="display:inline;">
+                  <button type="submit" class="btn btn-info">Show</button>
+                </form>
+                <form action="{{ path('app_organisateur_edit', {'id_organisateur': organisateur.idorganisateur}) }}" method="get" style="display:inline;">
+                  <button type="submit" class="btn btn-warning">Edit</button>
+                </form>
+                <form action="{{ path('app_organisateur_delete', {'id_organisateur': organisateur.idorganisateur}) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this organizer?');">
+                  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ organisateur.idorganisateur) }}">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucun organisateur trouvé.</p>
+  {% endif %}
+
+  <a href="{{ path('app_organisateur_register') }}" class="create-button">Créer un nouvel organisateur</a>
+{% endblock %}

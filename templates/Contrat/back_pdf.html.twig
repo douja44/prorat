@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Contrat PDF</title>
+    <style>
+        body {
+            font-family: 'Poppins', 'Arial', sans-serif;
+            font-size: 14px;
+            background: #f5f5f5;
+            padding: 40px;
+            color: #333;
+        }
+        .contract-container {
+            background: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 30px 40px;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            text-decoration: underline;
+        }
+        p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        .info-section {
+            margin-top: 30px;
+        }
+        .signature-section {
+            margin-top: 60px;
+            text-align: center;
+        }
+        .signature-line {
+            margin-top: 40px;
+            border-top: 1px solid #333;
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .date {
+            text-align: right;
+            font-style: italic;
+            font-size: 13px;
+        }
+        .signature-image {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .signature-image img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contract-container">
+        <div class="date">
+            {{ date }}
+        </div>
+
+        <h1>Objet : Contrat Événement</h1>
+
+        <div class="info-section">
+            <p>Je soussigné(e), <strong>{{ userNom }}</strong>,</p>
+
+            <p>Participe à l'événement <strong>{{ eventTitre }}</strong>.</p>
+
+            <p>Les conditions du contrat sont les suivantes :</p>
+
+            <p style="margin-left: 20px;"><em>{{ contrat.conditionsContrat }}</em></p>
+
+            <p>Le montant convenu est de <strong>{{ contrat.montant }} €</strong>.</p>
+
+            <p>Ce contrat prend fin à la date suivante : <strong>{{ contrat.dateExpiration }}</strong>.</p>
+        </div>
+
+        {% set signaturePath = 'uploads/signatures/signature_contrat_' ~ contrat.id ~ '.png' %}
+        {% set signatureExists = (signaturePath is not empty) %}
+
+        <div class="signature-section">
+            <p>Signature de l'utilisateur :</p>
+            <div class="signature-line"></div>
+
+            {% if signatureExists %}
+                <div class="signature-image">
+                    <img src="{{ absolute_url(asset(signaturePath)) }}" alt="Signature de l'utilisateur" style="width:200px; height:auto;">
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

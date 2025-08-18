@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Contrats</title>
+    <link rel="icon" href="{{ asset('assets/img/logo.jpg') }}">
+
+    <!-- CSS imports -->
+    <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
+    <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+</head>
+
+<body>
+
+<header>
+    {% include 'header.html.twig' %}
+</header>
+
+<main>
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Liste des Contrats</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <!-- Barre de recherche + tri -->
+    <form method="get" action="{{ path('contrat_front_index') }}" class="mb-4">
+        <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-7">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Rechercher un contrat par conditions..."
+                           value="{{ app.request.get('search') }}">
+                    <button class="btn btn-primary" type="submit">Rechercher</button>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <select name="sort" class="form-select" onchange="this.form.submit()">
+                    <option value="">Trier par</option>
+                    <option value="montant_asc"  {% if app.request.get('sort') == 'montant_asc' %}selected{% endif %}>Montant croissant</option>
+                    <option value="montant_desc" {% if app.request.get('sort') == 'montant_desc' %}selected{% endif %}>Montant décroissant</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-2 text-md-end">
+                <a href="{{ path('offre_front_index') }}" class="btn btn-success w-100">
+                    Voir la liste des Offres
+                </a>
+            </div>
+        </div>
+    </form>
+
+    {# --- Grille de cards (comme les Offres) --- #}
+    {% if contrats is not empty %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for contrat in contrats %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body d-flex flex-column">
+
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h5 class="card-title mb-0">
+                                    {{ offres[contrat.idoffre] ?? ('Offre #' ~ contrat.idoffre) }}
+                                </h5>
+                                <span class="badge bg-secondary">
+                                    {{ users[contrat.iduser] ?? 'Utilisateur supprimé' }}
+                                </span>
+                            </div>
+
+                            <p class="card-subtitle text-muted mb-2">
+                                {{ events[contrat.idevent] ?? 'Événement supprimé' }}
+                            </p>
+
+                            {% if contrat.conditionsContrat %}
+                                <p class="card-text small text-muted mb-3">
+                                    {# Troncature sans le filtre "u" #}
+                                    {% set _cond = contrat.conditionsContrat %}
+                                    {{ _cond|length > 140 ? _cond|slice(0, 140) ~ '…' : _cond }}
+                                </p>
+                            {% endif %}
+
+                            <div class="d-flex justify-content-between align-items-end mt-auto pt-2">
+                                <div>
+                                    <div class="fw-semibold">
+                                        {{ (contrat.montant ?? 0)|number_format(2, ',', ' ') }} €
+                                    </div>
+                                    <small class="text-muted">
+                                        Expire le {{ contrat.dateExpiration }}
+                                    </small>
+                                </div>
+
+                                {# Dé-commente si tu as une route "show" :
+                                <a class="btn btn-primary btn-sm"
+                                   href="{{ path('app_contrat_show', {id: contrat.id}) }}">
+                                    Voir Détail
+                                </a>
+                                #}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center text-muted py-5">Aucun contrat trouvé.</div>
+    {% endif %}
+</div>
+</main>
+
+<footer>
+    {% include 'footer.html.twig' %}
+</footer>
+
+<!-- JS imports -->
+<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+<script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+<script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+script src="{{ asset('assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+<script src="{{ asset('assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
+<script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+<script src="{{ asset('assets/js/main.js') }}"></script>
+
+</body>
+</html>

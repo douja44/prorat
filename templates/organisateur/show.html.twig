@@ -1,0 +1,51 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Détails de l'Organisateur - {{ organisateur.user.nom }} {{ organisateur.user.prenom }}{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div class="profile-card">
+      <div class="profile-header">
+        <img src="{{ asset('assets/img/image1.png') }}" alt="Profile Image" class="profile-pic">
+        <h2>{{ organisateur.user.nom }} {{ organisateur.user.prenom }}</h2>
+        <p>{{ organisateur.workField }}</p>
+        <div class="btn-group">
+          <a href="#" class="btn primary">Suivre</a>
+          <a href="#" class="btn secondary">Message</a>
+        </div>
+      </div>
+      <div class="profile-links">
+        <a href="#" class="social-link">🌐 Website</a>
+        <a href="#" class="social-link">🐙 Github</a>
+        <a href="#" class="social-link">🐦 Twitter</a>
+        <a href="#" class="social-link">📷 Instagram</a>
+        <a href="#" class="social-link">📘 Facebook</a>
+      </div>
+    </div>
+
+    <div class="details-container">
+      <div class="info-card">
+        <h3>Informations Personnelles</h3>
+        <p><strong>Email:</strong> {{ organisateur.user.email }}</p>
+        <p><strong>Téléphone:</strong> {{ organisateur.user.telephone }}</p>
+        <p><strong>Adresse:</strong> {{ organisateur.user.adresse }}</p>
+        <p><strong>Date de naissance:</strong> {{ organisateur.user.datenaiss|date('d/m/Y') }}</p>
+      </div>
+
+      <div class="info-card">
+        <h3>Informations Professionnelles</h3>
+        <p><strong>Email professionnel:</strong> {{ organisateur.workEmail }}</p>
+        <p><strong>Domaine:</strong> {{ organisateur.workField }}</p>
+        <p><strong>Date d'inscription:</strong> {{ organisateur.user.dateinscription|date('d/m/Y') }}</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="{{ path('app_organisateur_edit', {'id_organisateur': organisateur.idorganisateur}) }}" class="btn">Modifier</a>
+      <form method="post" action="{{ path('app_organisateur_delete', {'id_organisateur': organisateur.idorganisateur}) }}" onsubmit="return confirm('Supprimer cet organisateur ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ organisateur.idorganisateur) }}">
+        <button type="submit" class="btn danger">Supprimer</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

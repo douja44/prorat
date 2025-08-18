@@ -1,0 +1,52 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Détails de l'Utilisateur - {{ user.nom }} {{ user.prenom }}{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div class="profile-card">
+      <div class="profile-header">
+        <img src="{{ asset('images/default-avatar.png') }}" alt="Profile Image" class="profile-pic">
+        <h2>{{ user.nom }} {{ user.prenom }}</h2>
+        <p>Utilisateur enregistré</p>
+        <div class="btn-group">
+          <a href="#" class="btn primary">Suivre</a>
+          <a href="#" class="btn secondary">Message</a>
+        </div>
+      </div>
+      <div class="profile-links">
+        <a href="#" class="social-link">🐦 Twitter</a>
+        <a href="#" class="social-link">📷 Instagram</a>
+        <a href="#" class="social-link">📘 Facebook</a>
+      </div>
+    </div>
+
+    <div class="details-container">
+      <div class="info-card">
+        <h3>Informations Personnelles</h3>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Date de Naissance:</strong> {{ user.dateNaiss ? user.dateNaiss|date('d/m/Y') : 'Non renseigné' }}</p>
+        <p><strong>Adresse:</strong> {{ user.adresse }}</p>
+        <p><strong>Téléphone:</strong> {{ user.telephone }}</p>
+      </div>
+
+      <div class="info-card">
+        <h3>Compte & Rôles</h3>
+        <p><strong>Date d'Inscription:</strong> {{ user.dateInscription ? user.dateInscription|date('d/m/Y') : 'Non renseigné' }}</p>
+        <p><strong>Rôles:</strong> 
+          {% for role in user.roles %}
+            <span class="role-badge">{{ role }}</span>{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn">Modifier</a>
+      <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+        <button type="submit" class="btn danger">Supprimer</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

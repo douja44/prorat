@@ -1,0 +1,189 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Inscription Organisateur{% endblock %}
+
+{% block body %}
+<div class="container mt-4 ">
+  <div class="card shadow-lg p-4" style="max-width: 1200px; margin: auto; border-radius: 10px;padding: 10px;">
+    <h2 class="text-center fw-bold" style="color: #6188ae;">Inscription Organisateur</h2>
+    <p class="text-center text-muted">Rejoignez notre communauté et organisez des événements exceptionnels !</p>
+    
+    {# Display global form errors if any #}
+    
+        
+    {{ form_start(registrationForm, {'attr': {'class': 'organizer-form', 'novalidate': 'novalidate'}}) }}
+
+    <div class="row mt-4">
+        <!-- Left Section -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Informations Personnelles</h4>
+            <div class="form-group mb-3">
+                <label for="nom">Nom</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user icon"></i>
+                    {{ form_widget(registrationForm.user.nom, {'attr': {'class': 'form-control' ~ (registrationForm.user.nom.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Nom'}}) }}
+                </div>
+                {% if not registrationForm.user.nom.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.nom) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="prenom">Prénom</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user icon" style="color:#6188ae;"></i>
+                    {{ form_widget(registrationForm.user.prenom, {'attr': {'class': 'form-control' ~ (registrationForm.user.prenom.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Prénom'}}) }}
+                </div>
+                {% if not registrationForm.user.prenom.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.prenom) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope icon"></i>
+                    {{ form_widget(registrationForm.user.email, {'attr': {'class': 'form-control' ~ (registrationForm.user.email.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Email'}}) }}
+                </div>
+                {% if not registrationForm.user.email.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.email) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="mot_de_passe">Mot de passe</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock icon"></i>
+                    {{ form_widget(registrationForm.user.mot_de_passe, {'attr': {'class': 'form-control' ~ (registrationForm.user.mot_de_passe.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Mot de passe'}}) }}
+                </div>
+                {% if not registrationForm.user.mot_de_passe.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.mot_de_passe) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Informations Complémentaires</h4>
+            <div class="form-group mb-3">
+                <label for="date_naiss">Date de naissance</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-calendar-alt icon"></i>
+                    {{ form_widget(registrationForm.user.date_naiss, {'attr': {'class': 'form-control' ~ (registrationForm.user.date_naiss.vars.valid ? '' : ' is-invalid')}}) }}
+                </div>
+                {% if not registrationForm.user.date_naiss.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.date_naiss) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="adresse">Adresse</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-map-marker-alt icon"></i>
+                    {{ form_widget(registrationForm.user.adresse, {'attr': {'class': 'form-control' ~ (registrationForm.user.adresse.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Adresse'}}) }}
+                </div>
+                {% if not registrationForm.user.adresse.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.adresse) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="telephone">Téléphone</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone icon"></i>
+                    {{ form_widget(registrationForm.user.telephone, {'attr': {'class': 'form-control' ~ (registrationForm.user.telephone.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Téléphone'}}) }}
+                </div>
+                {% if not registrationForm.user.telephone.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.user.telephone) }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="workField">Domaine de travail</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-briefcase icon"></i>
+                    {{ form_widget(registrationForm.workField, {'attr': {'class': 'form-control' ~ (registrationForm.workField.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Domaine de travail'}}) }}
+                </div>
+                {% if not registrationForm.workField.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.workField) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Professionnel in the Center -->
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2">
+            <h4 class="mb-3 text-center">Email Professionnel</h4>
+            <div class="form-group mb-3">
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope icon"></i>
+                    {{ form_widget(registrationForm.workEmail, {'attr': {'class': 'form-control' ~ (registrationForm.workEmail.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Email Professionnel'}}) }}
+                </div>
+                {% if not registrationForm.workEmail.vars.valid %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.workEmail) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Include any hidden fields that might not be rendered explicitly above #}
+    {{ form_rest(registrationForm) }}
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn w-100 py-2" style="background-color: #6188ae; border-color: #6188ae; color: white;">
+        <i class="fas fa-user-plus"></i> S'inscrire
+    </button>
+
+    {{ form_end(registrationForm) }}
+  </div>
+</div>
+
+<style>
+    /* Make error messages stand out */
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+    
+    /* Style the input wrapper for error state */
+    .form-control.is-invalid {
+        border-color: #dc3545;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+    
+    /* Global form error message styling */
+    .alert-danger {
+        color: #842029;
+        background-color: #f8d7da;
+        border-color: #f5c2c7;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.25rem;
+    }
+</style>
+{% endblock %}

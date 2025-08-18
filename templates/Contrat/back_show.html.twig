@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails du Contrat</title>
+    <link rel="icon" href="{{ asset('assets/img/logo.jpg') }}">
+
+    <!-- CSS imports -->
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/style1.css') }}" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Poppins&family=Raleway&display=swap" rel="stylesheet">
+
+    <style>
+        .detail-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 40px;
+            margin: 50px auto;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .detail-item {
+            margin-bottom: 20px;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <!-- Navbar -->
+    <nav id="content" class="d-flex align-items-center justify-content-between mb-4">
+        <i class='bx bx-menu toggle-sidebar'></i>
+
+        <form method="get" action="{{ path('app_user_index') }}" style="width: 100%; max-width: 400px;">
+            <div class="form-group" style="display: flex; position: relative; width: 100%;">
+                <input type="text" name="search" placeholder="Rechercher..." style="width: 100%; padding-right: 40px;">
+                <button type="submit" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none;">
+                    <i class='bx bx-search icon'></i>
+                </button>
+            </div>
+        </form>
+
+        <div class="d-flex align-items-center">
+            <a href="#" class="nav-link">
+                <i class='bx bxs-bell icon'></i>
+                <span class="badge">5</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class='bx bxs-message-square-dots icon'></i>
+                <span class="badge">8</span>
+            </a>
+            <span class="divider"></span>
+            <div class="profile">
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9" alt="Profile Picture">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside>
+        <section id="sidebar">
+            <a href="#" class="brand"><i class='bx bxs-smile icon'></i> AdminEvencia</a>
+            <ul class="side-menu">
+                <li><a href="#"><i class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+                <li class="divider" data-text="main">Main</li>
+                <li><a href="{{ path('app_user_index') }}"><i class="fas fa-users" style="color: rgb(29, 73, 121); margin-right: 10px;"></i> All Users</a></li>
+                <ul class="user-navigation">
+                    <li><a href="{{ path('app_organisateur_index') }}?role=organisateur"><i class="fas fa-user-tie" style="color: rgb(29, 73, 121); margin-right: 10px;"></i> Organisateurs</a></li>
+                    <li><a href="{{ path('app_participant_index') }}?role=participant"><i class="fas fa-users" style="color:rgb(29, 73, 121); margin-right: 10px;"></i> Participants</a></li>
+                    <li><a href="{{ path('app_partenaire_index') }}?role=partenaire"><i class="fas fa-handshake" style="color: rgb(29, 73, 121); margin-right: 10px;"></i> Partenaires</a></li>
+                </ul>
+            </ul>
+        </section>
+    </aside>
+
+    <!-- Main Content -->
+    <main>
+        <section id="content">
+
+            <div class="container mt-5">
+                <h1 class="mb-4 text-center">Détail du Contrat</h1>
+
+                <div class="detail-card">
+
+                    <div class="detail-item">
+                        <span class="detail-label">ID :</span> {{ contrat.id }}
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">ID Offre :</span> {{ contrat.idoffre }}
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">ID Utilisateur :</span> {{ contrat.idUser }}
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">ID Événement :</span> {{ contrat.idEvent }}
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Date d'Expiration :</span> {{ contrat.dateExpiration }}
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Montant (€) :</span> {{ contrat.montant }}
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Conditions du Contrat :</span>
+                        <p>{{ contrat.conditionsContrat }}</p>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="{{ path('contrat_front_back_index') }}" class="btn btn-secondary" style="color: black;">
+                            Retour à la liste des contrats
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+    </main>
+
+</div>
+
+<!-- JS imports -->
+<script src="{{ asset('assets/js/script.js') }}"></script>
+</body>
+</html>

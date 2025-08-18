@@ -1,0 +1,50 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Détails du Partenaire - {{ partenaire.user.nom }} {{ partenaire.user.prenom }}{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div class="profile-card">
+      <div class="profile-header">
+        <img src="{{ asset('images/default-avatar.png') }}" alt="Profile Image" class="profile-pic">
+        <h2>{{ partenaire.user.nom }} {{ partenaire.user.prenom }}</h2>
+        <p>{{ partenaire.type_service }}</p>
+        <div class="btn-group">
+          <a href="#" class="btn primary">Suivre</a>
+          <a href="#" class="btn secondary">Message</a>
+        </div>
+      </div>
+      <div class="profile-links">
+        <a href="{{ partenaire.site_web }}" class="social-link" target="_blank">🌐 Website</a>
+        <a href="#" class="social-link">🐙 Github</a>
+        <a href="#" class="social-link">🐦 Twitter</a>
+        <a href="#" class="social-link">📷 Instagram</a>
+        <a href="#" class="social-link">📘 Facebook</a>
+      </div>
+    </div>
+
+    <div class="details-container">
+      <div class="info-card">
+        <h3>Informations Personnelles</h3>
+        <p><strong>Email:</strong> {{ partenaire.user.email }}</p>
+        <p><strong>Téléphone:</strong> {{ partenaire.user.telephone }}</p>
+        <p><strong>Date d'inscription:</strong> {{ partenaire.user.dateinscription|date('d/m/Y') }}</p>
+      </div>
+
+      <div class="info-card">
+        <h3>Informations Professionnelles</h3>
+        <p><strong>Type de service:</strong> {{ partenaire.type_service }}</p>
+        <p><strong>Nombre de Contacts:</strong> {{ partenaire.nbre_contacts }}</p>
+        <p><strong>Site Web:</strong> <a href="{{ partenaire.site_web }}" target="_blank">{{ partenaire.site_web }}</a></p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="{{ path('app_partenaire_edit', {'id_partenaire': partenaire.id_partenaire}) }}" class="btn">Modifier</a>
+      <form method="post" action="{{ path('app_partenaire_delete', {'id_partenaire': partenaire.id_partenaire}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce partenaire ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ partenaire.id_partenaire) }}">
+        <button type="submit" class="btn danger">Supprimer</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

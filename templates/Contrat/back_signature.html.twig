@@ -1,0 +1,56 @@
+<!DOCTYPE html> 
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Signer le Contrat</title>
+    <style>
+        canvas {
+            border: 2px solid #000;
+            display: block;
+            margin: 20px auto;
+        }
+        .btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Signez ci-dessous</h2>
+
+<canvas id="signature-pad" width="400" height="200"></canvas>
+
+<button class="btn" onclick="saveSignature()">Enregistrer la Signature</button>
+
+<form id="signature-form" method="POST" action="{{ path('contrat_front_back_signature_upload', {'id': id}) }}">
+    <input type="hidden" name="signature" id="signature">
+</form>
+
+<script>
+    const canvas = document.getElementById('signature-pad');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+
+    canvas.addEventListener('mousedown', e => { isDrawing = true; ctx.moveTo(e.offsetX, e.offsetY); });
+    canvas.addEventListener('mousemove', e => { if (isDrawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
+    canvas.addEventListener('mouseup', () => { isDrawing = false; });
+
+    function saveSignature() {
+        const dataURL = canvas.toDataURL('image/png');
+        document.getElementById('signature').value = dataURL;
+        document.getElementById('signature-form').submit();
+    }
+</script>
+
+</body>
+</html>

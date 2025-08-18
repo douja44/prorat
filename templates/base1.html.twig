@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AdminEvencia{% endblock %}</title>
+        <link rel="icon" href="{{ asset('assets/img/logo.jpg') }}">
+    <style>
+/* Custom Scrollbar for Webkit Browsers */
+.table-container::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+}
+
+/* Firefox Scrollbar */
+.table-container {
+    scrollbar-color: #007bff #f1f1f1;
+    scrollbar-width: thin;
+}
+</style>
+
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/style1.css') }}" rel="stylesheet">
+    
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+
+</head>
+<body>
+    <div class="container">
+        
+       <!-- Navbar -->
+<nav id="content">
+    {% block navbar %}
+    <i class='bx bx-menu toggle-sidebar'></i>
+  
+    <form method="get" action="{{ path('app_user_index') }}" style="width: 100%; max-width: 400px;">
+    <div class="form-group" style="display: flex; position: relative; width: 100%;">
+        <input type="text" name="search" placeholder="Rechercher..." value="{{ searchTerm ?? '' }}"style="width: 100%; padding-right: 40px;">
+        <button type="submit" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none;"><i class='bx bx-search icon'></i></button>
+     </div>
+    </form>
+
+    <a href="#" class="nav-link">
+        <i class='bx bxs-bell icon'></i>
+        <span class="badge">5</span>
+    </a>
+    <a href="#" class="nav-link">
+        <i class='bx bxs-message-square-dots icon'></i>
+        <span class="badge">8</span>
+    </a>
+    <span class="divider"></span>
+    <div class="profile">
+        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGVvcGxlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="">
+        <ul class="profile-link">
+            <li><a href="#"><i class='bx bxs-user-circle icon'></i> Profile</a></li>
+            <li><a href="#"><i class='bx bxs-cog'></i> Settings</a></li>
+            <li><a href="#"><i class='bx bxs-log-out-circle'></i> Logout</a></li>
+        </ul>
+    </div>
+    {% endblock %}
+</nav>
+
+
+        <!-- Sidebar -->
+        <aside>
+            {% block sidebar %}
+            <section id="sidebar">
+                <a href="#" class="brand"><i class='bx bxs-smile icon'></i> AdminEvencia</a>
+                <ul class="side-menu">
+    <ul class="side-menu">
+    <li><a href="#" class="active"><i class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+    <li class="divider" data-text="main">Main</li>
+    <li><a href="{{ path('app_user_index') }}"><i class="fas fa-users" style="color: rgb(29, 73, 121); margin-right: 10px;"></i> All Users</a></li>
+    <ul class="user-navigation">
+        <li>
+            <a href="{{ path('app_organisateur_index') }}?role=organisateur">
+                <i class="fas fa-user-tie" style="color: rgb(29, 73, 121); margin-right: 10px;"></i> Organisateurs
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('app_participant_index') }}?role=participant">
+                <i class="fas fa-users" style="color:rgb(29, 73, 121); margin-right: 10px;"></i> Participants
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('app_partenaire_index') }}?role=partenaire">
+                <i class="fas fa-handshake" style="color: rgb(29, 73, 121); margin-right: 10px;"></i> Partenaires
+            </a>
+        </li>
+    </ul>
+</ul>
+
+
+
+
+
+
+
+                  
+                </ul>
+            </section>
+            {% endblock %}
+        </aside>
+
+        <!-- Main Content -->
+    <main>
+        <section id="content">
+            {% block body %}{% endblock %}
+        </section>
+    </main>
+
+    </div>
+    <script src="{{ asset('assets/js/script.js') }}"></script>
+</body>
+</html>

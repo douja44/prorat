@@ -1,0 +1,94 @@
+<!DOCTYPE html> 
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Offres Disponibles</title>
+    <link rel="icon" href="{{ asset('assets/img/logo.jpg') }}">
+
+    <!-- CSS imports -->
+    <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
+    <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+</head>
+
+<body>
+
+<header>
+    {% include 'header.html.twig' %}
+</header>
+
+<main>
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Liste des Offres Disponibles</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <!-- Formulaire de recherche et de tri -->
+    <form method="get" action="{{ path('offre_front_index') }}" class="mb-5">
+        <div class="row g-2">
+            <div class="col-md-8">
+                <input type="text" name="search" class="form-control" placeholder="Rechercher une offre par titre..." value="{{ app.request.get('search') }}">
+            </div>
+            <div class="col-md-3">
+                <select name="sort" class="form-select">
+                    <option value="">-- Trier par réduction --</option>
+                    <option value="asc" {% if app.request.get('sort') == 'asc' %}selected{% endif %}>Réduction croissante</option>
+                    <option value="desc" {% if app.request.get('sort') == 'desc' %}selected{% endif %}>Réduction décroissante</option>
+                </select>
+            </div>
+            <div class="col-md-1 d-grid">
+                <button class="btn btn-primary" type="submit">OK</button>
+            </div>
+        </div>
+    </form>
+
+
+    <div class="mb-4 text-end">
+        <a href="{{ path('contrat_front_index') }}" class="btn btn-success">
+            Voir la liste des Contrats
+        </a>
+    </div>
+    <div class="row">
+        {% for offre in offres %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ offre.titre }}</h5>
+                        <p class="card-text">{{ offre.description[:100] ~ '...' }}</p>
+                        <a href="{{ path('offre_front_show', {'id': offre.idoffre}) }}" class="btn btn-primary w-100">Voir Détail</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>Aucune offre disponible pour le moment.</p>
+        {% endfor %}
+    </div>
+</div>
+</main>
+
+<footer>
+    {% include 'footer.html.twig' %}
+</footer>
+
+<!-- JS imports -->
+<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+<script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+<script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+<script src="{{ asset('assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
+<script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+<script src="{{ asset('assets/js/main.js') }}"></script>
+
+</body>
+</html>
