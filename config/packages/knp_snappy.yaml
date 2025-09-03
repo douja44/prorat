@@ -1,10 +1,18 @@
 knp_snappy:
-    pdf:
-        enabled: true
-        binary: '%env(WKHTMLTOPDF_PATH)%'
-        options: []
-    image:
-        enabled: true
-        binary: '%env(WKHTMLTOIMAGE_PATH)%'
-        options: []
-    
+  pdf:
+    enabled: true
+    binary: '%env(WKHTMLTOPDF_BINARY)%'
+    options:
+      enable-local-file-access: true
+      encoding: 'utf-8'
+      page-size: A4
+      dpi: 96
+      javascript-delay: 300
+      no-stop-slow-scripts: true
+      load-error-handling: ignore
+      load-media-error-handling: ignore
+
+  image:
+    enabled: true
+    binary: '%env(WKHTMLTOIMAGE_BINARY)%'
+    options: { }

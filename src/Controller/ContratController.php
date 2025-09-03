@@ -4,18 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Contrat;
 use App\Entity\Offre;
-use App\Entity\Evenements;
-use App\Entity\User;
+// use App\Entity\Evenements; // on évite le repo pour contourner le mapping
+// use App\Entity\User;       // on évite le repo pour contourner le mapping
 use App\Form\ContratType;
-use App\Service\SmsSender;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\Persistence\ManagerRegistry;
 
 #[Route('/contrat', name: 'contrat_front_')]
 class ContratController extends AbstractController
@@ -28,19 +27,73 @@ class ContratController extends AbstractController
     public function newFront(int $idoffre, Request $request, EntityManagerInterface $entityManager): Response
     {
         $contrat = new Contrat();
-        $offre = $entityManager->getRepository(Offre::class)->find($idoffre);
 
+        // On récupère l'offre via Doctrine (elle semble bien mappée chez toi)
+        $offre = $entityManager->getRepository(Offre::class)->find($idoffre);
         if (!$offre) {
             throw $this->createNotFoundException('Offre non trouvée');
         }
 
+        // l'offre est imposée par l'URL
         $contrat->setIdoffre($idoffre);
 
         $form = $this->createForm(ContratType::class, $contrat);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        // === VALIDATIONS MÉTIER CÔTÉ SERVEUR (sans HTML) ===
+        if ($form->isSubmitted()) {
+            $conn = $entityManager->getConnection();
+
+            // 1) Vérifier l’existence de l’utilisateur via SQL direct (table: user, colonne: Id_user)
+            $userId = $contrat->getIdUser();
+            if ($userId === null || $userId === '') {
+                $form->get('idUser')->addError(new FormError("Veuillez saisir l'ID utilisateur."));
+            } else {
+                $userExists = (bool) $conn->fetchOne(
+                    'SELECT 1 FROM user WHERE Id_user = ? LIMIT 1',
+                    [$userId]
+                );
+                if (!$userExists) {
+                    $form->get('idUser')->addError(new FormError("L'utilisateur #$userId n'existe pas."));
+                }
+            }
+
+            // 2) Vérifier l’existence de l’événement via SQL direct (table: evenements, colonne: id_evenement)
+            $eventId = $contrat->getIdEvent();
+            if ($eventId === null || $eventId === '') {
+                $form->get('idEvent')->addError(new FormError("Veuillez saisir l'ID événement."));
+            } else {
+                $eventExists = (bool) $conn->fetchOne(
+                    'SELECT 1 FROM evenements WHERE id_evenement = ? LIMIT 1',
+                    [$eventId]
+                );
+                if (!$eventExists) {
+                    $form->get('idEvent')->addError(new FormError("L'événement #$eventId n'existe pas."));
+                }
+            }
+
+            // 3) Vérifier la date d'expiration >= J+20 (format saisi "jj/mm/aaaa")
+            $dateStr = $contrat->getDateExpiration(); // string dans ton modèle
+            if ($dateStr) {
+                $dt = \DateTimeImmutable::createFromFormat('d/m/Y', $dateStr);
+                $errors = \DateTimeImmutable::getLastErrors();
+                if (!$dt || !empty($errors['warning_count']) || !empty($errors['error_count'])) {
+                    $form->get('dateExpiration')->addError(new FormError("Date invalide. Format attendu : jj/mm/aaaa."));
+                } else {
+                    $min = (new \DateTimeImmutable('today'))->modify('+20 days')->setTime(0, 0, 0);
+                    $dtNoTime = $dt->setTime(0, 0, 0);
+                    if ($dtNoTime < $min) {
+                        $form->get('dateExpiration')->addError(
+                            new FormError("La date d'expiration doit être au moins à J+20 (min : ".$min->format('d/m/Y').").")
+                        );
+                    }
+                }
+            }
+        }
+
+        if ($form->isSubmitted() && $form->isValid() && !$form->getErrors(true)->count()) {
             try {
+                // appliquer la réduction de l'offre au montant saisi
                 $montantInitial = $contrat->getMontant();
                 $tauxReduction = $offre->getTauxReduction();
                 $montantFinal = $montantInitial * (1 - ($tauxReduction / 100));
@@ -51,7 +104,6 @@ class ContratController extends AbstractController
 
                 $this->addFlash('success', 'Contrat créé avec succès avec réduction appliquée !');
                 return $this->redirectToRoute('contrat_front_index');
-
             } catch (UniqueConstraintViolationException $e) {
                 $this->addFlash('error', 'Erreur : Ce contrat existe déjà pour cette offre.');
                 return $this->redirectToRoute('contrat_front_new', ['idoffre' => $idoffre]);
@@ -93,19 +145,15 @@ class ContratController extends AbstractController
 
         $conn = $entityManager->getConnection();
 
-        // Récupérer les utilisateurs
-        $sql = 'SELECT Id_user, nom FROM user';
-        $stmt = $conn->prepare($sql);
-        $users = $stmt->executeQuery()->fetchAllAssociative();
+        // Récupérer les utilisateurs (id -> nom)
+        $users = $conn->fetchAllAssociative('SELECT Id_user, nom FROM user');
         $usersById = [];
         foreach ($users as $user) {
             $usersById[$user['Id_user']] = $user['nom'];
         }
 
-        // Récupérer les événements
-        $sql = 'SELECT id_evenement, titre FROM evenements';
-        $stmt = $conn->prepare($sql);
-        $events = $stmt->executeQuery()->fetchAllAssociative();
+        // Récupérer les événements (id -> titre)
+        $events = $conn->fetchAllAssociative('SELECT id_evenement, titre FROM evenements');
         $eventsById = [];
         foreach ($events as $event) {
             $eventsById[$event['id_evenement']] = $event['titre'];
@@ -118,8 +166,6 @@ class ContratController extends AbstractController
             'users' => $usersById,
         ]);
     }
-
-
 
     // ============================
     // ==== PARTIE BACKEND =========
@@ -134,7 +180,7 @@ class ContratController extends AbstractController
         $qb = $entityManager->getRepository(Contrat::class)->createQueryBuilder('c');
 
         if ($search) {
-            $qb->where('c.conditions_contrat LIKE :search')
+            $qb->where('c.conditionsContrat LIKE :search')
                ->setParameter('search', '%' . $search . '%');
         }
 
@@ -155,18 +201,14 @@ class ContratController extends AbstractController
         $conn = $entityManager->getConnection();
 
         // Récupérer les utilisateurs
-        $sql = 'SELECT Id_user, nom FROM user';
-        $stmt = $conn->prepare($sql);
-        $users = $stmt->executeQuery()->fetchAllAssociative();
+        $users = $conn->fetchAllAssociative('SELECT Id_user, nom FROM user');
         $usersById = [];
         foreach ($users as $user) {
             $usersById[$user['Id_user']] = $user['nom'];
         }
 
         // Récupérer les événements
-        $sql = 'SELECT id_evenement, titre FROM evenements';
-        $stmt = $conn->prepare($sql);
-        $events = $stmt->executeQuery()->fetchAllAssociative();
+        $events = $conn->fetchAllAssociative('SELECT id_evenement, titre FROM evenements');
         $eventsById = [];
         foreach ($events as $event) {
             $eventsById[$event['id_evenement']] = $event['titre'];
@@ -194,7 +236,57 @@ class ContratController extends AbstractController
         $form = $this->createForm(ContratType::class, $contrat);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
+            $conn = $entityManager->getConnection();
+
+            // utilisateur
+            $userId = $contrat->getIdUser();
+            if ($userId === null || $userId === '') {
+                $form->get('idUser')->addError(new FormError("Veuillez saisir l'ID utilisateur."));
+            } else {
+                $userExists = (bool) $conn->fetchOne(
+                    'SELECT 1 FROM user WHERE Id_user = ? LIMIT 1',
+                    [$userId]
+                );
+                if (!$userExists) {
+                    $form->get('idUser')->addError(new FormError("L'utilisateur #$userId n'existe pas."));
+                }
+            }
+
+            // événement
+            $eventId = $contrat->getIdEvent();
+            if ($eventId === null || $eventId === '') {
+                $form->get('idEvent')->addError(new FormError("Veuillez saisir l'ID événement."));
+            } else {
+                $eventExists = (bool) $conn->fetchOne(
+                    'SELECT 1 FROM evenements WHERE id_evenement = ? LIMIT 1',
+                    [$eventId]
+                );
+                if (!$eventExists) {
+                    $form->get('idEvent')->addError(new FormError("L'événement #$eventId n'existe pas."));
+                }
+            }
+
+            // date J+20
+            $dateStr = $contrat->getDateExpiration();
+            if ($dateStr) {
+                $dt = \DateTimeImmutable::createFromFormat('d/m/Y', $dateStr);
+                $errors = \DateTimeImmutable::getLastErrors();
+                if (!$dt || !empty($errors['warning_count']) || !empty($errors['error_count'])) {
+                    $form->get('dateExpiration')->addError(new FormError("Date invalide. Format attendu : jj/mm/aaaa."));
+                } else {
+                    $min = (new \DateTimeImmutable('today'))->modify('+20 days')->setTime(0, 0, 0);
+                    $dtNoTime = $dt->setTime(0, 0, 0);
+                    if ($dtNoTime < $min) {
+                        $form->get('dateExpiration')->addError(
+                            new FormError("La date d'expiration doit être au moins à J+20 (min : ".$min->format('d/m/Y').").")
+                        );
+                    }
+                }
+            }
+        }
+
+        if ($form->isSubmitted() && $form->isValid() && !$form->getErrors(true)->count()) {
             $entityManager->flush();
 
             $this->addFlash('success', 'Contrat modifié avec succès.');
@@ -220,59 +312,52 @@ class ContratController extends AbstractController
         return $this->redirectToRoute('contrat_front_back_index');
     }
 
+    private EntityManagerInterface $entityManager;
 
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
 
+    #[Route('/admin/{id}/pdf', name: 'back_pdf', methods: ['GET'])]
+    public function generatePdf(Contrat $contrat, Pdf $pdf): Response
+    {
+        $signaturePath = 'uploads/signatures/signature_contrat_' . $contrat->getId() . '.png';
+        $absoluteSignaturePath = $this->getParameter('kernel.project_dir') . '/public/' . $signaturePath;
+        $signatureExists = file_exists($absoluteSignaturePath);
 
+        $conn = $this->entityManager->getConnection();
 
-    
-        private EntityManagerInterface $entityManager;
-    
-        public function __construct(EntityManagerInterface $entityManager)
-        {
-            $this->entityManager = $entityManager;
-        }
-    
-        #[Route('/admin/{id}/pdf', name: 'back_pdf', methods: ['GET'])]
-        public function generatePdf(Contrat $contrat, Pdf $pdf): Response
-        {
-            $signaturePath = 'uploads/signatures/signature_contrat_' . $contrat->getId() . '.png';
-            $absoluteSignaturePath = $this->getParameter('kernel.project_dir') . '/public/' . $signaturePath;
-            $signatureExists = file_exists($absoluteSignaturePath);
-    
-            $conn = $this->entityManager->getConnection();
-    
-            $userSql = 'SELECT nom FROM user WHERE Id_user = :idUser';
-            $userStmt = $conn->prepare($userSql);
-            $userNom = $userStmt->executeQuery(['idUser' => $contrat->getIdUser()])->fetchOne();
-    
-            $eventSql = 'SELECT titre FROM evenements WHERE id_evenement = :idEvent';
-            $eventStmt = $conn->prepare($eventSql);
-            $eventTitre = $eventStmt->executeQuery(['idEvent' => $contrat->getIdEvent()])->fetchOne();
-    
-            $html = $this->renderView('Contrat/back_pdf.html.twig', [
-                'contrat' => $contrat,
-                'date' => (new \DateTime())->format('d/m/Y'),
-                'signatureExists' => $signatureExists,
-                'signaturePath' => $signaturePath,
-                'userNom' => $userNom ?: 'Utilisateur supprimé',
-                'eventTitre' => $eventTitre ?: 'Événement supprimé',
-            ]);
-    
-            $output = $pdf->getOutputFromHtml($html);
-    
-            return new Response(
-                $output,
-                200,
-                [
-                    'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'attachment; filename="contrat_' . $contrat->getId() . '.pdf"'
-                ]
-            );
-        }
-    
-    
+        $userNom = $conn->fetchOne(
+            'SELECT nom FROM user WHERE Id_user = ?',
+            [$contrat->getIdUser()]
+        ) ?: 'Utilisateur supprimé';
 
+        $eventTitre = $conn->fetchOne(
+            'SELECT titre FROM evenements WHERE id_evenement = ?',
+            [$contrat->getIdEvent()]
+        ) ?: 'Événement supprimé';
 
+        $html = $this->renderView('Contrat/back_pdf.html.twig', [
+            'contrat' => $contrat,
+            'date' => (new \DateTime())->format('d/m/Y'),
+            'signatureExists' => $signatureExists,
+            'signaturePath' => $signaturePath,
+            'userNom' => $userNom,
+            'eventTitre' => $eventTitre,
+        ]);
+
+        $output = $pdf->getOutputFromHtml($html);
+
+        return new Response(
+            $output,
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="contrat_' . $contrat->getId() . '.pdf"'
+            ]
+        );
+    }
 
     #[Route('/admin/{id}/sign', name: 'back_signature', methods: ['GET'])]
     public function signBack(Contrat $contrat): Response

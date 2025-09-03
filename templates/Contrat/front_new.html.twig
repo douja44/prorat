@@ -21,10 +21,9 @@
 </header>
 
 <main>
-<div class="container mt-5">
-    <h1 class="text-center mb-5">Créer un nouveau contrat</h1>
-
-    <div class="bg-light p-5 rounded shadow-sm">
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card p-5 shadow form-container">
+        <h1 class="text-center mb-4">Créer un nouveau contrat</h1>
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">{{ message }}</div>
@@ -33,59 +32,176 @@
             <div class="alert alert-danger">{{ message }}</div>
         {% endfor %}
 
-        <div class="bg-white p-5 rounded shadow">
-            {{ form_start(form) }}
+        {# novalidate : on laisse Symfony gérer les erreurs côté serveur #}
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
-            {# ici idoffre est caché et non visible pour l'utilisateur #}
-            {{ form_widget(form.idoffre, {'attr': {'style': 'display:none;'}}) }}
+        {# idoffre est imposé par l'URL et caché #}
+        {{ form_widget(form.idoffre, {'attr': {'style': 'display:none;'}}) }}
 
-            <div class="mb-4">
-                {{ form_label(form.idUser) }}
-                {{ form_widget(form.idUser, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.idUser) }}
-            </div>
+        <div class="mb-5">
+            {{ form_label(form.idUser) }}
+            {{ form_widget(form.idUser, {
+                attr: {
+                    class: 'form-control input-long' ~ (form_errors(form.idUser) ? ' is-invalid' : '')
+                }
+            }) }}
+            {% if form_errors(form.idUser) %}
+                <div class="invalid-feedback d-block">
+                    {{ form_errors(form.idUser) }}
+                </div>
+            {% endif %}
+        </div>
 
-            <div class="mb-4">
-                {{ form_label(form.idEvent) }}
-                {{ form_widget(form.idEvent, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.idEvent) }}
-            </div>
+        <div class="mb-5">
+            {{ form_label(form.idEvent) }}
+            {{ form_widget(form.idEvent, {
+                attr: {
+                    class: 'form-control input-long' ~ (form_errors(form.idEvent) ? ' is-invalid' : '')
+                }
+            }) }}
+            {% if form_errors(form.idEvent) %}
+                <div class="invalid-feedback d-block">
+                    {{ form_errors(form.idEvent) }}
+                </div>
+            {% endif %}
+        </div>
 
-            <div class="mb-4">
-                {{ form_label(form.dateExpiration) }}
-                {{ form_widget(form.dateExpiration, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.dateExpiration) }}
-            </div>
+        <div class="mb-5">
+            {{ form_label(form.dateExpiration) }}
+            {{ form_widget(form.dateExpiration, {
+                attr: {
+                    class: 'form-control input-long' ~ (form_errors(form.dateExpiration) ? ' is-invalid' : ''),
+                    placeholder: 'jj/mm/aaaa'
+                }
+            }) }}
+            {% if form_errors(form.dateExpiration) %}
+                <div class="invalid-feedback d-block">
+                    {{ form_errors(form.dateExpiration) }}
+                </div>
+            {% endif %}
+        </div>
 
-            <div class="mb-4">
-                {{ form_label(form.montant) }}
-                {{ form_widget(form.montant, { 'attr': { 'class': 'form-control', 'id': 'montant_field' } }) }}
-                {{ form_errors(form.montant) }}
-            </div>
+        <div class="mb-5">
+            {{ form_label(form.montant) }}
+            {{ form_widget(form.montant, {
+                attr: {
+                    class: 'form-control input-long' ~ (form_errors(form.montant) ? ' is-invalid' : ''),
+                    id: 'montant_field'
+                }
+            }) }}
+            {% if form_errors(form.montant) %}
+                <div class="invalid-feedback d-block">
+                    {{ form_errors(form.montant) }}
+                </div>
+            {% endif %}
+        </div>
 
-            <div class="mb-4">
-                {{ form_label(form.conditionsContrat) }}
-                {{ form_widget(form.conditionsContrat, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.conditionsContrat) }}
-            </div>
-
-            <div class="text-center">
-                <button class="btn btn-primary btn-lg w-50">Créer le contrat</button>
-            </div>
-
-            {{ form_end(form) }}
+        <div class="mb-5">
+            {{ form_label(form.conditionsContrat) }}
+            {{ form_widget(form.conditionsContrat, {
+                attr: {
+                    class: 'form-control input-long' ~ (form_errors(form.conditionsContrat) ? ' is-invalid' : ''),
+                    style: 'height: 120px;'
+                }
+            }) }}
+            {% if form_errors(form.conditionsContrat) %}
+                <div class="invalid-feedback d-block">
+                    {{ form_errors(form.conditionsContrat) }}
+                </div>
+            {% endif %}
         </div>
 
         <div class="text-center mt-4">
-            <a href="{{ path('offre_front_index') }}" class="btn btn-secondary">Retour aux offres</a>
+            <button class="btn btn-primary btn-lg custom-submit-btn">Créer le contrat</button>
         </div>
+
+        {{ form_end(form) }}
     </div>
+</div>
+
+<div class="text-center mt-5">
+    <a href="{{ path('offre_front_index') }}" class="btn btn-info custom-list-btn">
+        <i class="fas fa-list"></i> Retour aux Offres
+    </a>
 </div>
 </main>
 
 <footer>
     {% include 'footer.html.twig' %}
 </footer>
+
+<!-- Styles (mêmes règles que pour l'offre) -->
+<style>
+.form-container {
+    width: 90%;
+    max-width: 1000px;
+    background: #fff;
+    padding: 60px;
+    border-radius: 12px;
+    margin: 0 auto;
+    min-height: 800px;
+}
+.input-long {
+    width: 100%;
+    height: 50px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* ==== Erreurs en rouge (sans Bootstrap) ==== */
+.is-invalid {
+    border-color: #dc3545 !important;
+    outline: none;
+}
+.invalid-feedback {            /* conteneur des erreurs */
+    color: #dc3545 !important; /* texte rouge */
+    font-weight: 600;
+    margin-top: .35rem;
+    font-size: .95rem;
+}
+.invalid-feedback ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+.invalid-feedback li {
+    color: #dc3545 !important;
+}
+
+/* fallback si Symfony rend un <ul> directement après l'input */
+.form-control + ul,
+.form-control + ul li {
+    color: #dc3545 !important;
+    list-style: none;
+    margin-top: .35rem;
+    padding-left: 0;
+}
+
+/* Boutons */
+.custom-submit-btn {
+    background-color: #0056ff;
+    border: none;
+    height: 55px;
+    width: 23cm;
+    font-size: 24px !important;
+    transition: all 0.3s ease;
+}
+.custom-submit-btn:hover {
+    background-color: #3366ff;
+    transform: scale(1.02);
+}
+.custom-list-btn {
+    width: 250px;
+    height: 50px;
+    font-size: 18px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+}
+.custom-list-btn:hover {
+    background-color: #138496;
+}
+</style>
 
 <!-- JS imports -->
 <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -99,6 +215,7 @@
 <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
+{# Application de la réduction au blur (même logique que l'offre) #}
 {% if offre is defined %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -117,6 +234,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endif %}
-
 </body>
 </html>
